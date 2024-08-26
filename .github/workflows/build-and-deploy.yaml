@@ -11,7 +11,7 @@ jobs:
       BUCKET: react-aws-s3.learndeployweb.com
       DIST: build
       REGION: ap-southeast-1
-      DIST-ID: E1DYHRRWT65NWN
+      DIST-ID: E2B5XB273QMQ0O
     steps:
       - name: Checkout
         uses: actions/checkout@v2
