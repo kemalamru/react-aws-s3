@@ -1,20 +1,24 @@
----
 name: Build and Deploy React App to Cloudfront
 on:
   push:
-    branches: [main]
+    branches: [main, staging]
+env:
+  BUCKET: react-aws-s3.learndeployweb.com
+  DIST: build
+  REGION: ap-southeast-1
+  # Default DIST-ID, can be overridden based on the branch
+  DIST-ID: E1DYHRRWT65NWN
 jobs:
   build-and-deploy:
     name: Build and Deploy
     runs-on: ubuntu-latest
-    env:
-      BUCKET: react-aws-s3.learndeployweb.com
-      DIST: build
-      REGION: ap-southeast-1
-      DIST-ID: E1DYHRRWT65NWN
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Set DIST-ID for staging
+        if: github.ref == 'refs/heads/staging'
+        run: echo "DIST-ID=E2B5XB273QMQ0O" >> $GITHUB_ENV
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -22,41 +26,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.REGION }}
-
-      - name: Install Dependencies
-        run: |
-          node -v
-          npm ci --production
-
-      - name: Build Static Website
-        run: npm run build
-
-      - name: Copy Website Files to S3 Bucket with the AWS CLI
-        run: aws s3 sync --delete ${{ env.DIST }} s3://${{ env.BUCKET }}
-
-      - name: Invalidate Cloudfront Cache
-        run: |
-          aws cloudfront create-invalidation \
-            --distribution-id ${{ env.DIST-ID }} \
-            --paths "/*"
-
----
-name: Build and Deploy React App to Cloudfront
-on:
-  push:
-    branches: [staging]
-jobs:
-  build-and-deploy:
-    name: Build and Deploy
-    runs-on: ubuntu-latest
-    env:
-      BUCKET: react-aws-s3.learndeployweb.com
-      DIST: build
-      REGION: ap-southeast-1
-      DIST-ID: E2B5XB273QMQ0O
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
