@@ -6,7 +6,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>CI CD Pipeline with Github Actions and AWS Amplify</p>
+        <h1>Staging</h1>
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
