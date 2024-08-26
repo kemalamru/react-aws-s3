@@ -6,7 +6,6 @@ env:
   BUCKET: react-aws-s3.learndeployweb.com
   DIST: build
   REGION: ap-southeast-1
-  # Default DIST-ID, can be overridden based on the branch
   DIST-ID: E1DYHRRWT65NWN
 jobs:
   build-and-deploy:
@@ -18,7 +17,9 @@ jobs:
 
       - name: Set DIST-ID for staging
         if: github.ref == 'refs/heads/staging'
-        run: echo "DIST-ID=E2B5XB273QMQ0O" >> $GITHUB_ENV
+        run: |
+          echo "DIST-ID=E2B5XB273QMQ0O" >> $GITHUB_ENV
+          echo "BUCKET=react-aws-s3-staging.learndeployweb.com" >> $GITHUB_ENV
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
